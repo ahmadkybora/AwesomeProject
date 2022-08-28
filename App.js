@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, View, Button, TextInput, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+import { 
+  Text, 
+  StyleSheet, 
+  View, 
+  Button, 
+  TextInput, 
+  ScrollView, 
+  FlatList, 
+  TouchableOpacity, 
+  Alert, 
+  TouchableWithoutFeedback, 
+  Keyboard 
+} from 'react-native';
 import Header from './components/header';
 import TodoItem from './components/todoItem';
+import AddTodo from './components/addTodo';
+import SandBox from './components/sandBox';
 
 export default function App() {
   // const [name, setName] = useState('shaun');
@@ -34,19 +48,39 @@ export default function App() {
       return prevTodos.filter(todo => todo.key != key);
     });
   }
+  const submitHandler = (text) => {
+    if(text.length > 3) {
+      setTodos((prevTodos) => {
+        return [
+          { text: text, key: Math.random().toString() },
+          ...prevTodos
+        ];
+      });
+    } else {
+      Alert.alert('OPS!', 'whoops', [
+        {text: 'un', 'onPress': () => console.log()}
+      ]);
+    }
+  }
   return (
-    <View style={styles.container}>
-      <Header />
-        <View style={styles.content}>
-          <View style={styles.list}>
-            <FlatList 
-              data={todos} 
-              renderItem={({ item }) => (
-                <TodoItem item={item} pressHandler={pressHandler}/>
-              )}/>
+    // <SandBox />
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+    }}>
+      <View style={styles.container}>
+        <Header />
+          <View style={styles.content}>
+            <AddTodo submitHandler={submitHandler}/>
+            <View style={styles.list}>
+              <FlatList 
+                data={todos} 
+                renderItem={({ item }) => (
+                  <TodoItem item={item} pressHandler={pressHandler}/>
+                )}/>
+            </View>
           </View>
-        </View>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
     // <View style={styles.container}>
     //   <FlatList 
     //     numColumns={2}
